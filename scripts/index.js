@@ -1,13 +1,32 @@
 'use strict';
 
+const overlay = document.querySelector('.overlay');
+const modal = document.querySelector('.modal');
 const modalTitle = document.querySelector('.modal__title');
 const modalForm = document.querySelector('.modal__form');
 const modalCheckbox = document.querySelector('.modal__checkbox');
 const modalInputDiscount = document.querySelector('.modal__input_discount');
-const overlay = document.querySelector('.overlay');
+const modalClose = document.querySelector('.modal__close');
 const tableBody = document.querySelector('.table__body');
+const btnAddGoods = document.querySelector('.panel__add-goods');
 
 overlay.classList.remove('active');
+
+btnAddGoods.addEventListener('click', () => {
+  overlay.classList.add('active');
+});
+
+modal.addEventListener('click', e => {
+  e.stopImmediatePropagation();
+})
+
+modalClose.addEventListener('click', () => {
+  overlay.classList.remove('active');
+});
+
+overlay.addEventListener('click', () => {
+  overlay.classList.remove('active');
+});
 
 const goods = [
   {
@@ -66,7 +85,7 @@ const goods = [
       "big": "img/lan_proconnect43-3-25-b.jpg"
     }
   }
-]
+];
 
 const createRow = ({id, count, title, category, units, price}) => {
   const tr = document.createElement('tr');
