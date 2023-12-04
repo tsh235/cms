@@ -1,33 +1,5 @@
 'use strict';
 
-const overlay = document.querySelector('.overlay');
-const modal = document.querySelector('.modal');
-const modalTitle = document.querySelector('.modal__title');
-const modalForm = document.querySelector('.modal__form');
-const modalCheckbox = document.querySelector('.modal__checkbox');
-const modalInputDiscount = document.querySelector('.modal__input_discount');
-const modalClose = document.querySelector('.modal__close');
-const tableBody = document.querySelector('.table__body');
-const btnAddGoods = document.querySelector('.panel__add-goods');
-
-overlay.classList.remove('active');
-
-btnAddGoods.addEventListener('click', () => {
-  overlay.classList.add('active');
-});
-
-modal.addEventListener('click', e => {
-  e.stopImmediatePropagation();
-})
-
-modalClose.addEventListener('click', () => {
-  overlay.classList.remove('active');
-});
-
-overlay.addEventListener('click', () => {
-  overlay.classList.remove('active');
-});
-
 const goods = [
   {
     "id": 1,
@@ -87,10 +59,33 @@ const goods = [
   }
 ];
 
+const overlay = document.querySelector('.overlay');
+const modalTitle = document.querySelector('.modal__title');
+const modalForm = document.querySelector('.modal__form');
+const modalCheckbox = document.querySelector('.modal__checkbox');
+const modalInputDiscount = document.querySelector('.modal__input_discount');
+const tableBody = document.querySelector('.table__body');
+const btnAddGoods = document.querySelector('.panel__add-goods');
+
+overlay.classList.remove('active');
+
+btnAddGoods.addEventListener('click', () => {
+  overlay.classList.add('active');
+});
+
+overlay.addEventListener('click', ({target}) => {
+  if (target === overlay || target.closest('.modal__close')) {
+    overlay.classList.remove('active');
+  }
+});
+
+let rowCount = 0;
 const createRow = ({id, count, title, category, units, price}) => {
+  rowCount += 1;
   const tr = document.createElement('tr');
+  tr.classList.add('table__body-row')
   tr.innerHTML = `
-    <td class="table__cell">${id}</td>
+    <td class="table__cell">${rowCount}</td>
     <td class="table__cell table__cell_left table__cell_name" data-id="${id}">
       <span class="table__cell-id">id: ${id}</span>
       ${title}</td>
@@ -111,11 +106,29 @@ const createRow = ({id, count, title, category, units, price}) => {
 
 tableBody.textContent = '';
 
-const renderGoods = (goodsList) => {
-  goodsList.forEach(item => {
-    const tableRow = createRow(item);
-    tableBody.append(tableRow);
+const renderGoods = (elem, goodsList) => {
+  const rows = goodsList.map(createRow);
+  elem.append(...rows);
+  return rows;
+};
+
+const tableRows = renderGoods(tableBody, goods);
+
+const deleteGoods = (arrGoods, id) => {
+  const index = arrGoods.findIndex(obj => obj.id === id);
+  arrGoods.splice(index, 1);
+  console.log('arrGoods: ', arrGoods);
+};
+
+const deleteRow = (listRows, goods) => {
+  listRows.addEventListener('click', ({target}) => {
+    if (target.closest('.table__btn_del')) {
+      const row = target.closest('.table__body-row');
+      const id = parseInt(row.querySelector('.table__cell_name').dataset.id);
+      target.closest('.table__body-row').remove();
+      deleteGoods(goods, id);
+    }
   });
 };
 
-renderGoods(goods);
+deleteRow(tableBody, goods);
