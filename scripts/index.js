@@ -3,7 +3,7 @@
 const goods = [
   {
     'id': 1,
-    'title': 'Смартфон Xiaomi 11T 8/128GB',
+    'name': 'Смартфон Xiaomi 11T 8/128GB',
     'price': 27000,
     'description': 'Смартфон Xiaomi 11T – это представитель флагманской линейки, выпущенной во второй половине 2021 года. И он полностью соответствует такому позиционированию, предоставляя своим обладателям возможность пользоваться отличными камерами, ни в чем себя не ограничивать при запуске игр и других требовательных приложений.',
     'category': 'mobile-phone',
@@ -17,7 +17,7 @@ const goods = [
   },
   {
     'id': 2,
-    'title': 'Радиоуправляемый автомобиль Cheetan',
+    'name': 'Радиоуправляемый автомобиль Cheetan',
     'price': 4000,
     'description': 'Внедорожник на дистанционном управлении. Скорость 25км/ч. Возраст 7 - 14 лет',
     'category': 'toys',
@@ -31,7 +31,7 @@ const goods = [
   },
   {
     'id': 3,
-    'title': 'ТВ приставка MECOOL KI',
+    'name': 'ТВ приставка MECOOL KI',
     'price': 12400,
     'description': 'Всего лишь один шаг сделает ваш телевизор умным, Быстрый и умный MECOOL KI PRO, прекрасно спроектированный, сочетает в себе прочный процессор Cortex-A53 с чипом Amlogic S905D',
     'category': 'tv-box',
@@ -45,7 +45,7 @@ const goods = [
   },
   {
     'id': 4,
-    'title': 'Витая пара PROConnect 01-0043-3-25',
+    'name': 'Витая пара PROConnect 01-0043-3-25',
     'price': 22,
     'description': 'Витая пара Proconnect 01-0043-3-25 является сетевым кабелем с 4 парами проводов типа UTP, в качестве проводника в которых используется алюминий, плакированный медью CCA. Такая неэкранированная витая пара с одножильными проводами диаметром 0.50 мм широко применяется в процессе сетевых монтажных работ. С ее помощью вы сможете обеспечить развертывание локальной сети в домашних условиях или на предприятии, объединить все необходимое вам оборудование в единую сеть.',
     'category': 'cables',
@@ -60,35 +60,64 @@ const goods = [
 ];
 
 const overlay = document.querySelector('.overlay');
-const modalTitle = document.querySelector('.modal__title');
+// const modalTitle = document.querySelector('.modal__title');
 const modalForm = document.querySelector('.modal__form');
-const modalCheckbox = document.querySelector('.modal__checkbox');
-const modalInputDiscount = document.querySelector('.modal__input_discount');
+// const modalCheckbox = document.querySelector('.modal__checkbox');
+// const modalInputDiscount = document.querySelector('.modal__input_discount');
+const cmsTotalPrice = document.querySelector('.cms__total-price');
 const tableBody = document.querySelector('.table__body');
 const btnAddGoods = document.querySelector('.panel__add-goods');
 
 overlay.classList.remove('active');
+modalForm.total.textContent = `$ 0.00`;
+cmsTotalPrice.textContent = `$ 0.00`;
 
-btnAddGoods.addEventListener('click', () => {
-  overlay.classList.add('active');
-});
+const modalControl = () => {
+  const getVendorId = () => {
+    let vendorId = 0;
+    vendorId = Math.ceil(Math.random() * 1000000000);
 
-overlay.addEventListener('click', ({target}) => {
-  if (target === overlay || target.closest('.modal__close')) {
+    const vendorCodeId = overlay.querySelector('.vendor-code__id');
+    vendorCodeId.textContent = vendorId;
+    return vendorId;
+  };
+
+  const openModal = () => {
+    overlay.classList.add('active');
+    const vendorId = getVendorId();
+    console.log('vendorId: ', vendorId);
+  };
+
+  const closeModal = (form) => {
     overlay.classList.remove('active');
-  }
-});
+  };
+
+  btnAddGoods.addEventListener('click', openModal);
+
+  overlay.addEventListener('click', ({target}) => {
+    if (target === overlay || target.closest('.modal__close')) {
+      closeModal();
+    }
+  });
+
+  return {
+    closeModal,
+  };
+};
+
+const {closeModal} = modalControl(modalForm);
 
 let rowCount = 0;
-const createRow = ({id, count, title, category, units, price}) => {
+let totalPrice = 0;
+const createRow = ({id, count, name, category, units, price}) => {
   rowCount += 1;
   const tr = document.createElement('tr');
-  tr.classList.add('table__body-row')
+  tr.classList.add('table__body-row');
   tr.innerHTML = `
     <td class='table__cell'>${rowCount}</td>
     <td class='table__cell table__cell_left table__cell_name' data-id='${id}'>
       <span class='table__cell-id'>id: ${id}</span>
-      ${title}</td>
+      ${name}</td>
     <td class='table__cell table__cell_left'>${category}</td>
     <td class='table__cell'>${units}</td>
     <td class='table__cell'>${count}</td>
@@ -101,6 +130,11 @@ const createRow = ({id, count, title, category, units, price}) => {
     </td>
   `;
 
+  totalPrice += count * price;
+
+  cmsTotalPrice.textContent =
+    `$ ${totalPrice.toFixed(2)}`;
+
   return tr;
 };
 
@@ -109,12 +143,11 @@ tableBody.textContent = '';
 const renderGoods = (elem, goodsList) => {
   const rows = goodsList.map(createRow);
   elem.append(...rows);
-  return rows;
 };
 
 renderGoods(tableBody, goods);
 
-const deleteGoods = (arrGoods, id) => {
+const deleteProduct = (arrGoods, id) => {
   const index = arrGoods.findIndex(obj => obj.id === id);
   arrGoods.splice(index, 1);
   console.log('arrGoods: ', arrGoods);
@@ -126,9 +159,69 @@ const deleteRow = (listRows, goods) => {
       const row = target.closest('.table__body-row');
       const id = parseInt(row.querySelector('.table__cell_name').dataset.id);
       target.closest('.table__body-row').remove();
-      deleteGoods(goods, id);
+      deleteProduct(goods, id);
     }
   });
 };
 
 deleteRow(tableBody, goods);
+
+const formChange = (form) => {
+  form.discount.addEventListener('change', () => {
+    if (form.discount_count.disabled === true) {
+      form.discount_count.disabled = false;
+    } else {
+      form.discount_count.disabled = true;
+      form.discount_count.value = '';
+    }
+  });
+
+  form.count.addEventListener('change', () => {
+    if (form.count.value < 0) {
+      form.count.value = 0;
+    }
+
+    modalForm.total.textContent =
+      `$ ${(form.count.value * form.price.value).toFixed(2)}`;
+  });
+
+  form.price.addEventListener('change', () => {
+    if (form.price.value < 0) {
+      form.price.value = 0;
+    }
+
+    modalForm.total.textContent =
+      `$ ${(form.count.value * form.price.value).toFixed(2)}`;
+  });
+};
+
+formChange(modalForm);
+
+const addProductData = (product) => {
+  console.log('product: ', product);
+  goods.push(product);
+};
+
+const addProductPage = (product, tableBody) => {
+  console.log('product: ', product);
+  tableBody.append(createRow(product));
+};
+
+const formControl = (form, tableBody, closeModal) => {
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const newProduct = Object.fromEntries(formData);
+    console.log('newProduct: ', newProduct);
+
+    addProductData(newProduct);
+    addProductPage(newProduct, tableBody);
+
+    modalForm.total.textContent = `$ 0.00`;
+    form.reset();
+    closeModal();
+  });
+};
+
+formControl(modalForm, tableBody, closeModal);
