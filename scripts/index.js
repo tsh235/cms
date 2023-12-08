@@ -74,13 +74,14 @@ cmsTotalPrice.textContent = `$ 0.00`;
 
 const modalControl = () => {
   const getVendorId = () => {
-    let vendorId = 0;
-    vendorId = Math.ceil(Math.random() * 1000000000);
+    let id = 0;
+    id = Math.ceil(Math.random() * 1000000000);
 
     const vendorCodeId = overlay.querySelector('.vendor-code__id');
-    vendorCodeId.textContent = vendorId;
-    return vendorId;
+    vendorCodeId.textContent = id;
+    return id;
   };
+  const vendorId = getVendorId();
 
   const openModal = () => {
     overlay.classList.add('active');
@@ -92,9 +93,6 @@ const modalControl = () => {
 
   btnAddGoods.addEventListener('click', () => {
     openModal();
-    const vendorId = getVendorId();
-    console.log('vendorId: ', vendorId);
-    return vendorId;
   });
 
   overlay.addEventListener('click', ({target}) => {
@@ -104,11 +102,12 @@ const modalControl = () => {
   });
 
   return {
+    vendorId,
     closeModal,
   };
 };
 
-const {closeModal} = modalControl(modalForm);
+const {vendorId, closeModal} = modalControl(modalForm);
 
 let rowCount = 0;
 let totalPrice = 0;
@@ -214,12 +213,13 @@ const addProductPage = (product, tableBody) => {
   tableBody.append(createRow(product));
 };
 
-const formControl = (form, tableBody, closeModal) => {
+const formControl = (form, id, tableBody, closeModal) => {
   form.addEventListener('submit', e => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
     const newProduct = Object.fromEntries(formData);
+    newProduct.id = id;
     console.log('newProduct: ', newProduct);
 
     addProductData(newProduct);
@@ -231,4 +231,4 @@ const formControl = (form, tableBody, closeModal) => {
   });
 };
 
-formControl(modalForm, tableBody, closeModal);
+formControl(modalForm, vendorId, tableBody, closeModal);
