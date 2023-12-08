@@ -84,15 +84,18 @@ const modalControl = () => {
 
   const openModal = () => {
     overlay.classList.add('active');
-    const vendorId = getVendorId();
-    console.log('vendorId: ', vendorId);
   };
 
-  const closeModal = (form) => {
+  const closeModal = () => {
     overlay.classList.remove('active');
   };
 
-  btnAddGoods.addEventListener('click', openModal);
+  btnAddGoods.addEventListener('click', () => {
+    openModal();
+    const vendorId = getVendorId();
+    console.log('vendorId: ', vendorId);
+    return vendorId;
+  });
 
   overlay.addEventListener('click', ({target}) => {
     if (target === overlay || target.closest('.modal__close')) {
@@ -109,24 +112,25 @@ const {closeModal} = modalControl(modalForm);
 
 let rowCount = 0;
 let totalPrice = 0;
+
 const createRow = ({id, count, name, category, units, price}) => {
   rowCount += 1;
   const tr = document.createElement('tr');
   tr.classList.add('table__body-row');
   tr.innerHTML = `
-    <td class='table__cell'>${rowCount}</td>
-    <td class='table__cell table__cell_left table__cell_name' data-id='${id}'>
-      <span class='table__cell-id'>id: ${id}</span>
+    <td class="table__cell">${rowCount}</td>
+    <td class="table__cell table__cell_left table__cell_name" data-id="${id}">
+      <span class="table__cell-id">id: ${id}</span>
       ${name}</td>
-    <td class='table__cell table__cell_left'>${category}</td>
-    <td class='table__cell'>${units}</td>
-    <td class='table__cell'>${count}</td>
-    <td class='table__cell'>$${price}</td>
-    <td class='table__cell'>$${price * count}</td>
-    <td class='table__cell table__cell_btn-wrapper'>
-      <button class='table__btn table__btn_pic'></button>
-      <button class='table__btn table__btn_edit'></button>
-      <button class='table__btn table__btn_del'></button>
+    <td class="table__cell table__cell_left">${category}</td>
+    <td class="table__cell">${units}</td>
+    <td class="table__cell">${count}</td>
+    <td class="table__cell">$${price}</td>
+    <td class="table__cell table__cell_total" data-total="${price * count}">$${price * count}</td>
+    <td class="table__cell table__cell_btn-wrapper">
+      <button class="table__btn table__btn_pic"></button>
+      <button class="table__btn table__btn_edit"></button>
+      <button class="table__btn table__btn_del"></button>
     </td>
   `;
 
@@ -158,8 +162,13 @@ const deleteRow = (listRows, goods) => {
     if (target.closest('.table__btn_del')) {
       const row = target.closest('.table__body-row');
       const id = parseInt(row.querySelector('.table__cell_name').dataset.id);
-      target.closest('.table__body-row').remove();
+      const total = parseInt(row.querySelector('.table__cell_total').dataset.total);
+      row.remove();
       deleteProduct(goods, id);
+
+      totalPrice -= total;
+      cmsTotalPrice.textContent =
+        `$ ${(totalPrice).toFixed(2)}`;
     }
   });
 };
@@ -198,12 +207,10 @@ const formChange = (form) => {
 formChange(modalForm);
 
 const addProductData = (product) => {
-  console.log('product: ', product);
   goods.push(product);
 };
 
 const addProductPage = (product, tableBody) => {
-  console.log('product: ', product);
   tableBody.append(createRow(product));
 };
 
@@ -218,7 +225,7 @@ const formControl = (form, tableBody, closeModal) => {
     addProductData(newProduct);
     addProductPage(newProduct, tableBody);
 
-    modalForm.total.textContent = `$ 0.00`;
+    form.total.textContent = `$ 0.00`;
     form.reset();
     closeModal();
   });
