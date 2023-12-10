@@ -8,7 +8,6 @@ const {
 
 
 export const renderGoods = (elem, goods) => {
-  console.log('goods: ', goods);
   cmsTotalPrice.textContent = `$ 0`;
   tableBody.textContent = '';
   const rows = goods.map(createRow);

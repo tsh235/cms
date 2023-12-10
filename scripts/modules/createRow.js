@@ -11,7 +11,6 @@ export const createRow = (
   rowCount += 1;
 
   let totalPrice = +cmsTotalPrice.textContent.replace(/\D/g, '');
-  console.log('totalPrice: ', totalPrice);
 
   const tr = document.createElement('tr');
   tr.classList.add('table__body-row');

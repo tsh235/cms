@@ -3,14 +3,12 @@ import consts from './const.js';
 
 const {
   overlay,
-  modalForm,
   btnAddGoods,
 } = consts;
 
 overlay.classList.remove('active');
-modalForm.total.textContent = `$ 0.00`;
 
-export const modalControl = () => {
+export const modalControl = (form) => {
   const getVendorId = () => {
     let id = 0;
     id = Math.ceil(Math.random() * 1000000000);
@@ -36,6 +34,8 @@ export const modalControl = () => {
   overlay.addEventListener('click', ({target}) => {
     if (target === overlay || target.closest('.modal__close')) {
       closeModal();
+      form.total.textContent = `$ 0`;
+      form.reset();
     }
   });
 
@@ -46,12 +46,12 @@ export const modalControl = () => {
 };
 
 export const formControl = (form, id, tableBody, closeModal) => {
+  form.total.textContent = `$ 0`;
   form.addEventListener('submit', e => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
     const newProduct = Object.fromEntries(formData);
-    console.log('newProduct: ', newProduct);
     newProduct.id = id;
 
     addProductData(newProduct, tableBody, newProduct.length);
