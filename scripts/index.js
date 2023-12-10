@@ -1,6 +1,4 @@
-'use strict';
-
-const goods = [
+export const goods = [
   {
     'id': 1,
     'name': 'Смартфон Xiaomi 11T 8/128GB',
@@ -59,176 +57,28 @@ const goods = [
   },
 ];
 
-const overlay = document.querySelector('.overlay');
-// const modalTitle = document.querySelector('.modal__title');
-const modalForm = document.querySelector('.modal__form');
-// const modalCheckbox = document.querySelector('.modal__checkbox');
-// const modalInputDiscount = document.querySelector('.modal__input_discount');
-const cmsTotalPrice = document.querySelector('.cms__total-price');
-const tableBody = document.querySelector('.table__body');
-const btnAddGoods = document.querySelector('.panel__add-goods');
+import consts from './modules/const.js';
+import {formControl, modalControl} from './modules/control.js';
+import {deleteRow} from './modules/deleteProduct.js';
+import {formChange} from './modules/formChange.js';
+import {renderGoods} from './modules/renderGoods.js';
 
-overlay.classList.remove('active');
-modalForm.total.textContent = `$ 0.00`;
-cmsTotalPrice.textContent = `$ 0.00`;
+const {
+  overlay,
+  modalForm,
+  tableBody,
+  cmsTotalPrice,
+} = consts;
 
-const modalControl = () => {
-  const getVendorId = () => {
-    let id = 0;
-    id = Math.ceil(Math.random() * 1000000000);
+const init = () => {
+  overlay.classList.remove('active');
+  cmsTotalPrice.textContent = `$ 0`;
 
-    const vendorCodeId = overlay.querySelector('.vendor-code__id');
-    vendorCodeId.textContent = id;
-    return id;
-  };
-  const vendorId = getVendorId();
-
-  const openModal = () => {
-    overlay.classList.add('active');
-  };
-
-  const closeModal = () => {
-    overlay.classList.remove('active');
-  };
-
-  btnAddGoods.addEventListener('click', () => {
-    openModal();
-  });
-
-  overlay.addEventListener('click', ({target}) => {
-    if (target === overlay || target.closest('.modal__close')) {
-      closeModal();
-    }
-  });
-
-  return {
-    vendorId,
-    closeModal,
-  };
+  const {vendorId, closeModal} = modalControl(modalForm);
+  renderGoods(tableBody, goods);
+  deleteRow(tableBody, goods);
+  formChange(modalForm);
+  formControl(modalForm, vendorId, tableBody, closeModal);
 };
 
-const {vendorId, closeModal} = modalControl(modalForm);
-
-let rowCount = 0;
-let totalPrice = 0;
-
-const createRow = ({id, count, name, category, units, price}) => {
-  rowCount += 1;
-  const tr = document.createElement('tr');
-  tr.classList.add('table__body-row');
-  tr.innerHTML = `
-    <td class="table__cell">${rowCount}</td>
-    <td class="table__cell table__cell_left table__cell_name" data-id="${id}">
-      <span class="table__cell-id">id: ${id}</span>
-      ${name}</td>
-    <td class="table__cell table__cell_left">${category}</td>
-    <td class="table__cell">${units}</td>
-    <td class="table__cell">${count}</td>
-    <td class="table__cell">$${price}</td>
-    <td class="table__cell table__cell_total" data-total="${price * count}">$${price * count}</td>
-    <td class="table__cell table__cell_btn-wrapper">
-      <button class="table__btn table__btn_pic"></button>
-      <button class="table__btn table__btn_edit"></button>
-      <button class="table__btn table__btn_del"></button>
-    </td>
-  `;
-
-  totalPrice += count * price;
-
-  cmsTotalPrice.textContent =
-    `$ ${totalPrice.toFixed(2)}`;
-
-  return tr;
-};
-
-tableBody.textContent = '';
-
-const renderGoods = (elem, goodsList) => {
-  const rows = goodsList.map(createRow);
-  elem.append(...rows);
-};
-
-renderGoods(tableBody, goods);
-
-const deleteProduct = (arrGoods, id) => {
-  const index = arrGoods.findIndex(obj => obj.id === id);
-  arrGoods.splice(index, 1);
-  console.log('arrGoods: ', arrGoods);
-};
-
-const deleteRow = (listRows, goods) => {
-  listRows.addEventListener('click', ({target}) => {
-    if (target.closest('.table__btn_del')) {
-      const row = target.closest('.table__body-row');
-      const id = parseInt(row.querySelector('.table__cell_name').dataset.id);
-      const total = parseInt(row.querySelector('.table__cell_total').dataset.total);
-      row.remove();
-      deleteProduct(goods, id);
-
-      totalPrice -= total;
-      cmsTotalPrice.textContent =
-        `$ ${(totalPrice).toFixed(2)}`;
-    }
-  });
-};
-
-deleteRow(tableBody, goods);
-
-const formChange = (form) => {
-  form.discount.addEventListener('change', () => {
-    if (form.discount_count.disabled === true) {
-      form.discount_count.disabled = false;
-    } else {
-      form.discount_count.disabled = true;
-      form.discount_count.value = '';
-    }
-  });
-
-  form.count.addEventListener('change', () => {
-    if (form.count.value < 0) {
-      form.count.value = 0;
-    }
-
-    modalForm.total.textContent =
-      `$ ${(form.count.value * form.price.value).toFixed(2)}`;
-  });
-
-  form.price.addEventListener('change', () => {
-    if (form.price.value < 0) {
-      form.price.value = 0;
-    }
-
-    modalForm.total.textContent =
-      `$ ${(form.count.value * form.price.value).toFixed(2)}`;
-  });
-};
-
-formChange(modalForm);
-
-const addProductData = (product) => {
-  goods.push(product);
-};
-
-const addProductPage = (product, tableBody) => {
-  tableBody.append(createRow(product));
-};
-
-const formControl = (form, id, tableBody, closeModal) => {
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-
-    const formData = new FormData(e.target);
-    const newProduct = Object.fromEntries(formData);
-    newProduct.id = id;
-    console.log('newProduct: ', newProduct);
-
-    addProductData(newProduct);
-    addProductPage(newProduct, tableBody);
-
-    form.total.textContent = `$ 0.00`;
-    form.reset();
-    closeModal();
-  });
-};
-
-formControl(modalForm, vendorId, tableBody, closeModal);
+init();
