@@ -8,6 +8,7 @@ const {
 } = elems;
 
 export const addProduct = (product) => {
+  console.log('product: ', product);
   goods.push(product);
   const count = goods.length - 1;
   renderGoods(tableBody, goods, count);

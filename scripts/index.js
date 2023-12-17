@@ -62,6 +62,7 @@ import {formControl, modalControl} from './modules/control.js';
 import {deleteRow} from './modules/deleteProduct.js';
 import {formChange} from './modules/formChange.js';
 import {renderGoods} from './modules/renderGoods.js';
+import {openImage} from './modules/openImage.js';
 
 const {
   overlay,
@@ -79,6 +80,7 @@ const init = () => {
   deleteRow(tableBody, goods);
   formChange(modalForm);
   formControl(modalForm, vendorId, tableBody, closeModal);
+  openImage(tableBody);
 };
 
 init();
