@@ -1,8 +1,8 @@
-import consts from './const.js';
+import elems from './elements.js';
 
 const {
   cmsTotalPrice,
-} = consts;
+} = elems;
 
 export const createRow = (
     {id, count, name, category, units, price},

@@ -1,13 +1,13 @@
 import {goods} from '../index.js';
-import consts from './const.js';
+import elems from './elements.js';
 import {renderGoods} from './renderGoods.js';
 import {updateTotalPrice} from './updateTotalPrice.js';
 
 const {
   tableBody,
-} = consts;
+} = elems;
 
-export const addProductData = (product) => {
+export const addProduct = (product) => {
   goods.push(product);
   const count = goods.length - 1;
   renderGoods(tableBody, goods, count);

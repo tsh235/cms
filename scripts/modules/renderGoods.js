@@ -1,10 +1,10 @@
 import {createRow} from './createRow.js';
-import consts from './const.js';
+import elems from './elements.js';
 
 const {
   cmsTotalPrice,
   tableBody,
-} = consts;
+} = elems;
 
 
 export const renderGoods = (elem, goods) => {

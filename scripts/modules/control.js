@@ -1,10 +1,10 @@
-import {addProductData} from './addProduct.js';
-import consts from './const.js';
+import {addProduct} from './addProduct.js';
+import elems from './elements.js';
 
 const {
   overlay,
   btnAddGoods,
-} = consts;
+} = elems;
 
 overlay.classList.remove('active');
 
@@ -53,8 +53,9 @@ export const formControl = (form, id, tableBody, closeModal) => {
     const formData = new FormData(e.target);
     const newProduct = Object.fromEntries(formData);
     newProduct.id = id;
+    console.log('newProduct: ', newProduct);
 
-    addProductData(newProduct, tableBody, newProduct.length);
+    addProduct(newProduct, tableBody, newProduct.length);
 
     form.total.textContent = `$ 0`;
     form.reset();

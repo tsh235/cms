@@ -57,7 +57,7 @@ export const goods = [
   },
 ];
 
-import consts from './modules/const.js';
+import elems from './modules/elements.js';
 import {formControl, modalControl} from './modules/control.js';
 import {deleteRow} from './modules/deleteProduct.js';
 import {formChange} from './modules/formChange.js';
@@ -68,7 +68,7 @@ const {
   modalForm,
   tableBody,
   cmsTotalPrice,
-} = consts;
+} = elems;
 
 const init = () => {
   overlay.classList.remove('active');

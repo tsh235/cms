@@ -1,8 +1,8 @@
-import consts from './const.js';
+import elems from './elements.js';
 
 const {
   modalForm,
-} = consts;
+} = elems;
 
 export const formChange = (form) => {
   form.discount.addEventListener('change', () => {

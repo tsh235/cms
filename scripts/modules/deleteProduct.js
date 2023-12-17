@@ -1,10 +1,10 @@
-import consts from './const.js';
+import elems from './elements.js';
 import {renderGoods} from './renderGoods.js';
 import {updateTotalPrice} from './updateTotalPrice.js';
 
 const {
   tableBody,
-} = consts;
+} = elems;
 
 const deleteProduct = (arrGoods, id) => {
   const index = arrGoods.findIndex(obj => obj.id === id);
