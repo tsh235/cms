@@ -1,5 +1,5 @@
-import {createRow} from './createRow.js';
-import elems from './elements.js';
+import {createRow} from './createElements.js';
+import elems from './const.js';
 
 const {
   cmsTotalPrice,

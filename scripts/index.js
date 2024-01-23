@@ -57,12 +57,12 @@ export const goods = [
   },
 ];
 
-import elems from './modules/elements.js';
+import elems from './modules/const.js';
 import {formControl, modalControl} from './modules/control.js';
-import {deleteRow} from './modules/deleteProduct.js';
-import {formChange} from './modules/formChange.js';
-import {renderGoods} from './modules/renderGoods.js';
-import {openImage} from './modules/openImage.js';
+import {deleteRow} from './modules/handlers.js';
+import {formChange} from './modules/control.js';
+import {renderGoods} from './modules/render.js';
+import {openImage} from './modules/handlers.js';
 
 const {
   overlay,

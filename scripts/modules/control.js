@@ -1,9 +1,10 @@
-import {addProduct} from './addProduct.js';
-import elems from './elements.js';
+import {addProduct} from './handlers.js';
+import elems from './const.js';
 
 const {
   overlay,
   btnAddGoods,
+  modalForm,
 } = elems;
 
 overlay.classList.remove('active');
@@ -45,6 +46,35 @@ export const modalControl = (form) => {
   };
 };
 
+export const formChange = (form) => {
+  form.discount.addEventListener('change', () => {
+    if (form.discount_count.disabled === true) {
+      form.discount_count.disabled = false;
+    } else {
+      form.discount_count.disabled = true;
+      form.discount_count.value = '';
+    }
+  });
+
+  form.count.addEventListener('change', () => {
+    if (form.count.value < 0) {
+      form.count.value = 0;
+    }
+
+    modalForm.total.textContent =
+      `$ ${form.count.value * form.price.value}`;
+  });
+
+  form.price.addEventListener('change', () => {
+    if (form.price.value < 0) {
+      form.price.value = 0;
+    }
+
+    modalForm.total.textContent =
+      `$ ${form.count.value * form.price.value}`;
+  });
+};
+
 export const formControl = (form, id, tableBody, closeModal) => {
   form.total.textContent = `$ 0`;
   form.addEventListener('submit', e => {
@@ -53,7 +83,6 @@ export const formControl = (form, id, tableBody, closeModal) => {
     const formData = new FormData(e.target);
     const newProduct = Object.fromEntries(formData);
     newProduct.id = id;
-    console.log('newProduct: ', newProduct);
 
     addProduct(newProduct, tableBody, newProduct.length);
 

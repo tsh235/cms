@@ -1,4 +1,4 @@
-import elems from './elements.js';
+import elems from './const.js';
 
 const {
   cmsTotalPrice,
@@ -29,7 +29,8 @@ export const createRow = (
       $${price * count}
     </td>
     <td class="table__cell table__cell_btn-wrapper">
-      <button class="table__btn table__btn_pic" data-pic="./img/pic.jpg"></button>
+      <button class="table__btn table__btn_pic"
+        data-pic="./img/pic.jpg"></button>
       <button class="table__btn table__btn_edit"></button>
       <button class="table__btn table__btn_del"></button>
     </td>
