@@ -5,6 +5,7 @@ const {
   overlay,
   btnAddGoods,
   modalForm,
+  fileImage,
 } = elems;
 
 overlay.classList.remove('active');
@@ -72,6 +73,43 @@ export const formChange = (form) => {
 
     modalForm.total.textContent =
       `$ ${form.count.value * form.price.value}`;
+  });
+
+  const modalLabelFile = document.querySelector('.modal__label_file');
+  const errorText = document.createElement('p');
+  const image = document.createElement('img');
+  errorText.textContent = '';
+
+  fileImage.addEventListener('change', () => {
+    if (fileImage.files.length > 0) {
+      const src = URL.createObjectURL(fileImage.files[0]);
+
+      if (fileImage.files[0].size > 1048576) {
+        image.remove();
+        errorText.style.cssText = `
+          grid-area: .;
+          color: #D80101;
+          font-size: 14px;
+          font-weight: 700;
+          letter-spacing: 1.4px;
+          text-transform: uppercase;
+        `;
+        errorText.textContent = 'Изображение не должно превышать размер 1 Мб';
+        modalLabelFile.insertAdjacentElement('beforebegin', errorText);
+      } else {
+        errorText.textContent = '';
+        image.style.cssText = `
+          width: 200px;
+          height: 200px;
+          object-fit: contain;
+          object-position: center;
+          grid-column: 1/-1;
+          justify-self: center;
+        `;
+        image.src = src;
+        modalLabelFile.insertAdjacentElement('afterend', image);
+      }
+    }
   });
 };
 

@@ -3,6 +3,7 @@ const modalForm = document.querySelector('.modal__form');
 const btnAddGoods = document.querySelector('.panel__add-goods');
 const tableBody = document.querySelector('.table__body');
 const cmsTotalPrice = document.querySelector('.cms__total-price');
+const fileImage = document.querySelector('#image');
 
 export default {
   overlay,
@@ -10,4 +11,5 @@ export default {
   btnAddGoods,
   tableBody,
   cmsTotalPrice,
+  fileImage,
 };
